@@ -3809,12 +3809,19 @@ inline Call *new_invite_register(packet_s_process *packetS, int sip_method, char
 				outStr << "called: "
 				       << setw(15)
 				       << call->get_called(c_branch) << "  ";
+
 				if(is_read_from_file()) {
 					cout << outStr.str() << endl;
+					syslog(LOG_NOTICE, "%s", outStr.str().c_str());
 				} else {
 					syslog(LOG_NOTICE, "%s", outStr.str().c_str());
 				}
 			}
+
+				/*
+				2023.4.10 by yslee log add.
+				*/
+				syslog(LOG_NOTICE, "*** Seen INVITE, CSeq: %u, Caller:%s, Called:%s, call->fbasename:%s\n", c_branch->invitecseq.number, c_branch->caller.c_str(), c_branch->called_to.c_str(), call->fbasename);
 		} else if(sip_method == MESSAGE) {
 			if(verbosity > 2)
 				syslog(LOG_NOTICE, "Seen MESSAGE, CSeq: %u\n", c_branch->messagecseq.number);

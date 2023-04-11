@@ -3178,7 +3178,9 @@ Call::convertRawToWav() {
 	int adir = 0;
 	int bdir = 0;
 	
-	bool useWavMix = opt_saveaudio_wav_mix;
+	//bool useWavMix = opt_saveaudio_wav_mix;
+	bool useWavMix = false; //2023.4.10 yslee merge 하지 말자.
+
 	if(useWavMix && connect_duration_s() > 3600) {
 		int maxsamplerate = 0;
 		for(int i = 0; i <= 1; i++) {
@@ -3887,7 +3889,11 @@ Call::convertRawToWav() {
 				wavMix->addWav(wav, getTimeUS(rawf->tv), 0, samplerate);
 			}
 		}
-		if(!sverb.noaudiounlink) unlink(rawInfo);
+		/*
+		2023.4.10 by yslee
+		info 파일 삭제 하지 않게 변경.
+		*/
+		//if(!sverb.noaudiounlink) unlink(rawInfo);
 		
 		if(wavMix) {
 			wavMix->mixTo(wav, true, false);
@@ -3903,9 +3909,32 @@ Call::convertRawToWav() {
 		}
 
 	}
+	/*
+	2023.4.10 by yslee
+	수신자 및 발신자의 wav파일 변환후
+	기존 파일 삭제 하지 않게 변경
+	*/
+	if(adir == 1 && bdir == 1) {
+		syslog(LOG_NOTICE,"발신자 wav 변환중... [%s]", wav0);
+		// there is only caller sound
+		if(!(flags & FLAG_FORMATAUDIO_OGG)) {
+			wav_mix(wav0, NULL, out, maxsamplerate, 0, opt_saveaudio_stereo);
+		} else {
+			ogg_mix(wav0, NULL, out, opt_saveaudio_stereo, maxsamplerate, opt_saveaudio_oggquality, 0);
+		}
 
+		syslog(LOG_NOTICE,"수신자 wav 변환중... [%s]", wav1);
+		// there is only called sound
+		if(!(flags & FLAG_FORMATAUDIO_OGG)) {
+			wav_mix(wav1, NULL, out, maxsamplerate, 1, opt_saveaudio_stereo);
+		} else {
+			ogg_mix(wav1, NULL, out, opt_saveaudio_stereo, maxsamplerate, opt_saveaudio_oggquality, 1);
+		}
+	}
+	/*
 	if(adir == 1 && bdir == 1) {
 		// merge caller and called 
+		syslog(LOG_NOTICE,"수신자 + 발신자 wav 변환중...");
 		if(!(flags & FLAG_FORMATAUDIO_OGG)) {
 			if(!opt_saveaudio_reversestereo) {
 				wav_mix(wav0, wav1, out, maxsamplerate, 0, opt_saveaudio_stereo);
@@ -3922,6 +3951,7 @@ Call::convertRawToWav() {
 		if(!sverb.noaudiounlink) unlink(wav0);
 		if(!sverb.noaudiounlink) unlink(wav1);
 	} else if(adir == 1) {
+		syslog(LOG_NOTICE,"발신자 wav 변환중...");
 		// there is only caller sound
 		if(!(flags & FLAG_FORMATAUDIO_OGG)) {
 			wav_mix(wav0, NULL, out, maxsamplerate, 0, opt_saveaudio_stereo);
@@ -3930,6 +3960,7 @@ Call::convertRawToWav() {
 		}
 		if(!sverb.noaudiounlink) unlink(wav0);
 	} else if(bdir == 1) {
+		syslog(LOG_NOTICE,"수신자 wav 변환중...");
 		// there is only called sound
 		if(!(flags & FLAG_FORMATAUDIO_OGG)) {
 			wav_mix(wav1, NULL, out, maxsamplerate, 1, opt_saveaudio_stereo);
@@ -3938,6 +3969,7 @@ Call::convertRawToWav() {
 		}
 		if(!sverb.noaudiounlink) unlink(wav1);
 	}
+	*/
 	string tmp;
 	tmp.append(out);
 	addtofilesqueue(tsf_audio, tmp, 0);

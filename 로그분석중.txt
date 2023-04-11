@@ -1,0 +1,22 @@
+Apr 10 16:55:57 posicube-virtual-machine voipmonitor[2552357]: pcap_filename: [/var/spool/voipmonitor/2023-04-10/16/55/SIP/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.pcap]
+Apr 10 16:56:00 posicube-virtual-machine voipmonitor[2552357]: pcap_filename: [/var/spool/voipmonitor/2023-04-10/16/55/RTP/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.pcap]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: Converting G.711 ulaw to WAV ssrc[2696e4f7] wav[/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i0.wav] index[1]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: Converting G.711 ulaw to WAV ssrc[2147a373] wav[/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i0.wav] index[3]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: Converting G.711 ulaw to WAV ssrc[414515f3] wav[/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i1.wav] index[0]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: Converting G.711 ulaw to WAV ssrc[610c6026] wav[/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i1.wav] index[2]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: 발신자 wav 변환중... [/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i0.wav]
+Apr 10 16:56:48 posicube-virtual-machine voipmonitor[2552357]: 수신자 wav 변환중... [/var/spool/voipmonitor/2023-04-10/16/55/AUDIO/02c34fed0a8fb84f7185fb930f380b80@192.168.80.18:5060.i1.wav]
+
+
+
+
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: pcap_filename: [/var/spool/voipmonitor/2023-04-10/18/59/SIP/55809297-34716-8@BJC.BGI.IA.BAF.pcap]
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: Seen INVITE, CSeq: 70
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: *** Seen INVITE, CSeq: 70, Caller:10005, Called:02100, call->fbasename:55809297-34716-8@BJC.BGI.IA.BAF
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: pcap_filename: [/var/spool/voipmonitor/2023-04-10/18/59/SIP/6ce843af2c6788931029a0e85a5d85fb@192.168.80.18:5060.pcap]
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: Seen INVITE, CSeq: 102
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: *** Seen INVITE, CSeq: 102, Caller:025269030, Called:02100, call->fbasename:6ce843af2c6788931029a0e85a5d85fb@192.168.80.18:5060
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: Seen INVITE, CSeq: 70
+Apr 10 18:59:13 posicube-virtual-machine voipmonitor[52969]: Seen INVITE, CSeq: 102
+Apr 10 18:59:14 posicube-virtual-machine voipmonitor[52969]: create cdr partitions - begin
+

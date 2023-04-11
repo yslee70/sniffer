@@ -533,7 +533,7 @@ int opt_audioqueue_threads_max = 10;
 bool opt_saveaudio_answeronly = false;
 bool opt_saveaudio_filteripbysipip = false;
 bool opt_saveaudio_filter_ext = true;
-bool opt_saveaudio_wav_mix = true;
+bool opt_saveaudio_wav_mix = false; //기본값 true
 bool opt_saveaudio_from_first_invite = true;
 bool opt_saveaudio_afterconnect = false;
 bool opt_saveaudio_from_rtp = false;
@@ -828,9 +828,9 @@ volatile bool cloud_activecheck_inprogress = false;		//is currently checking in 
 volatile bool cloud_activecheck_sshclose = false;		//is forced close/re-open of ssh forward thread?
 timeval cloud_last_activecheck;					//Time of a last check request sent
 
-char cloud_host[256] = "cloud.voipmonitor.org";
+char cloud_host[256] = ""; //"cloud.voipmonitor.org";
 char cloud_token[256] = "";
-bool cloud_router = true;
+bool cloud_router = false;
 unsigned cloud_router_port = 60023;
 
 cCR_Receiver_service *cloud_receiver = NULL;
@@ -11269,6 +11269,7 @@ int eval_config(string inistr) {
 	}
 	if((value = ini.GetValue("general", "saveaudio_wav_mix", NULL))) {
 		opt_saveaudio_wav_mix = yesno(value);
+		syslog(LOG_INFO, "[config] opt_saveaudio_wav_mix =  %d", opt_saveaudio_wav_mix);
 	}
 	if((value = ini.GetValue("general", "saveaudio_from_first_invite", NULL))) {
 		opt_saveaudio_from_first_invite = yesno(value);
