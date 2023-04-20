@@ -297,8 +297,13 @@ extern int opt_ssl_dtls_handshake_safe;
 extern unsigned opt_max_sip_packets_in_call;
 extern unsigned opt_max_invite_packets_in_call;
 
+extern string kafka_ip;
+extern string kafka_topic;
+extern string sipserver;
+
 extern cProcessingLimitations processing_limitations;
 
+extern int send_kafka(const char* brokers, const char* topic, string data);
 
 #define ENABLE_DTLS_QUEUE (opt_enable_ssl && ssl_client_random_use && opt_ssl_enable_dtls_queue)
 #define ENABLE_DTLS_HANDSHAKE_SAFE_LINKS (opt_enable_ssl && ssl_client_random_use && opt_ssl_dtls_handshake_safe)
@@ -3821,7 +3826,7 @@ inline Call *new_invite_register(packet_s_process *packetS, int sip_method, char
 				/*
 				2023.4.10 by yslee log add.
 				*/
-				syslog(LOG_NOTICE, "*** Seen INVITE, CSeq: %u, Caller:%s, Called:%s, call->fbasename:%s\n", c_branch->invitecseq.number, c_branch->caller.c_str(), c_branch->called_to.c_str(), call->fbasename);
+				syslog(LOG_NOTICE, "*** Seen INVITE, Called Domain:%s, CSeq: %u, Caller:%s, Called:%s, call->fbasename:%s\n", c_branch->called_domain_to.c_str(), c_branch->invitecseq.number, c_branch->caller.c_str(), c_branch->called_to.c_str(), call->fbasename);
 		} else if(sip_method == MESSAGE) {
 			if(verbosity > 2)
 				syslog(LOG_NOTICE, "Seen MESSAGE, CSeq: %u\n", c_branch->messagecseq.number);
@@ -5157,6 +5162,33 @@ void process_packet_sip_call(packet_s_process *packetS) {
 					
 					if(verbosity > 2)
 						syslog(LOG_NOTICE, "Call answered\n");
+					/*
+					2023.4.17 by yslee log add.
+					TODO: send to kafka topic
+					ex: {"calldate":"${ARG1}","dialstatus":"${ARG2}","phone":"${ARG3}","agent":"${ARG4}", "uniqueId":"${ARG8}", "direction":"${direction}"}
+					*/
+					long int runAt;
+					runAt = time(NULL);
+					string localActTime = sqlDateTimeString(runAt);
+
+					string data;
+					JsonExport json_export;
+					json_export.add("calldate", localActTime.c_str());
+					json_export.add("dialstatus", "connected");
+					json_export.add("phone", c_branch->called_to.c_str());
+					json_export.add("agent", c_branch->caller.c_str());
+					json_export.add("uniqueId", call->fbasename);
+					json_export.add("direction", "");
+					data = json_export.getJson();
+
+					//sprintf(data, "{\"calldate\":%s\"\",\"dialstatus\":\"connected\",\"phone\":\"%s\",\"agent\":\"%s\", \"uniqueId\":\"%s\", \"direction\":\"%s\"}", localActTime.c_str(), c_branch->called_to.c_str(), c_branch->caller.c_str(), call->fbasename, "tx");
+					syslog(LOG_NOTICE, data.c_str());
+					syslog(LOG_NOTICE, "*** Call answered, Called Domain:%s, CSeq: %u, Caller:%s, Called:%s, call->fbasename:%s\n", c_branch->called_domain_to.c_str(), c_branch->invitecseq.number, c_branch->caller.c_str(), c_branch->called_to.c_str(), call->fbasename);
+					if(strcmp(sipserver.c_str(), c_branch->called_domain_to.c_str()) == 0) {
+						send_kafka(kafka_ip.c_str(),kafka_topic.c_str(),data);
+					}
+
+
 					++call->onCall_2XX_counter;
 					if(call->onCall_2XX_counter == 1) {
 						if(call->typeIs(INVITE)) {

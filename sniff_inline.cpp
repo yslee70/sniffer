@@ -60,7 +60,6 @@ extern unsigned int defrag_counter;
 extern unsigned int duplicate_counter;
 extern int opt_save_ip_from_encaps_ipheader_only_gre;
 
-
 #if SNIFFER_INLINE_FUNCTIONS
 inline 
 #endif

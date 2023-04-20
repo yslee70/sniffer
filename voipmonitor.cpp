@@ -782,6 +782,11 @@ char sql_cdr_reason_table[256] = "cdr_reason";
 char mysql_host[256] = "127.0.0.1";
 char mysql_host_orig[256] = "";
 char mysql_database[256] = "voipmonitor";
+//char kafka_ip[40] = "127.0.0.1";
+//char kafka_topic[256] = "Demo";
+string kafka_ip;
+string kafka_topic;
+string sipserver;
 char mysql_user[256] = "root";
 char mysql_password[256] = "";
 int opt_mysql_port = 0; // 0 means use standard port
@@ -6878,6 +6883,10 @@ void cConfig::addConfigItems() {
 						obsolete();
 						addConfigItem(new FILE_LINE(42466) cConfigItem_yesno("enable_fraud", &opt_enable_fraud));
 						addConfigItem(new FILE_LINE(0) cConfigItem_yesno("enable_billing", &opt_enable_billing));
+			addConfigItem(new FILE_LINE(42069) cConfigItem_string("kafka_ip", &kafka_ip));
+			addConfigItem(new FILE_LINE(42069) cConfigItem_string("kafka_topic", &kafka_topic));
+			addConfigItem(new FILE_LINE(42069) cConfigItem_string("sipserver", &sipserver));
+
 		subgroup("process pcap");
 			addConfigItem((new FILE_LINE(0) cConfigItem_yesno("process_pcap_type", &opt_process_pcap_type))
 				->disableYes()
@@ -9085,10 +9094,25 @@ int eval_config(string inistr) {
 	const char *value2;
 	CSimpleIniA::TNamesDepend values;
 
+	// kafka ip
+	if((value = ini.GetValue("general", "kafka_ip", NULL))) {
+		kafka_ip = value;
+	}
+
+	// kafka topic
+	if((value = ini.GetValue("general", "kafka_topic", NULL))) {
+		kafka_topic = value;
+	}	
+
 	// sip ports
 	if (ini.GetAllValues("general", "sipport", values)) {
 		parse_config_item_ports(&values, sipportmatrix);
 	}
+
+	// sip server
+	if((value = ini.GetValue("general", "sipserver", NULL))) {
+		sipserver = value;
+	}	
 
 	// http ports
 	if (ini.GetAllValues("general", "httpport", values)) {
